@@ -1,43 +1,100 @@
-resource "aws_eks_cluster" "example" {
-  name     = "example-eks-cluster"
-  role_arn = aws_iam_role.eks_cluster_role.arn
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 20.0"
 
-  vpc_config {
-    subnet_ids = aws_subnet.public[*].id
-  }
+  cluster_name    = "dev-cluster"
+  cluster_version = "1.29"
+  authentication_mode = "API_AND_CONFIG_MAP"
+  cluster_endpoint_public_access  = true
+  cluster_endpoint_private_access = true
+  cluster_ip_family = "ipv4"
+  # encryption_config = [
+  #   {
+  #     provider = {
+  #       key_arn = aws_kms_key.eks_secrets.arn
+  #     }
+  #     resources = ["secrets"]
+  #   }
+  # ]
 
-  kubernetes_network_config {
-    ip_family = "ipv4"
-  }
+  # Enable Control plane logging
+  # enable_control_plane_log_types = [
+  #   "api",
+  #   "audit",
+  #   "authenticator",
+  #   "controllerManager",
+  #   "scheduler"
+  # ]
 
-  encryption_config {
-    resources = ["secrets"]
-    provider {
-      key_arn = aws_kms_key.eks_secrets.arn
+  cluster_addons = {
+    coredns = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
+    }
+    # Install Amazon EKS Pod Identity Agent EKS add-on
+    pod-identity-webhook = {
+      most_recent = true
     }
   }
 
-  logging {
-    cluster_logging {
-      enabled = true
-      types   = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+
+  vpc_id                   = "aws_vpc.terraform_vpc.id"
+  subnet_ids               = [aws_subnet.public_tf_subnet[0].id, aws_subnet.public_tf_subnet[1].id, aws_subnet.public_tf_subnet[2].id]
+  control_plane_subnet_ids = [aws_subnet.public_tf_subnet[0].id, aws_subnet.public_tf_subnet[1].id, aws_subnet.public_tf_subnet[2].id]
+
+  # # EKS Managed Node Group(s)
+  # eks_managed_node_group_defaults = {
+  #   instance_types = ["m6i.large", "m5.large", "m5n.large", "m5zn.large"]
+  # }
+
+  eks_managed_node_groups = {
+    node_group = {
+      ami_type = "AL2_x86_64"
+      min_size     = 1
+      max_size     = 3
+      desired_size = 2
+      max_unavailable = 1
+      instance_types = ["c3.large"]
+      capacity_type  = "ON_DEMAND"
     }
   }
 
-  version = "1.29"
+  # Cluster access entry
+  # To add the current caller identity as an administrator
+  # enable_cluster_creator_admin_permissions = true
 
-  endpoint_public_access  = true
-  endpoint_private_access = true
-}
+  access_entries = {
+    # One access entry with a policy associated
+    cluster = {
+      kubernetes_groups = []
+      principal_arn     = "arn:aws:iam::058264467072:root"
 
-resource "aws_eks_addon" "pod_identity" {
-  cluster_name      = aws_eks_cluster.example.name
-  addon_name        = "vpc-cni"
-  resolve_conflicts = "OVERWRITE"
-}
+      policy_associations = {
+        test = {
+          policy_arn = "aws_iam_policy.eks_policy.arn"
+          access_scope = {
+            namespaces = ["default"]
+            type       = "namespace"
+          }
+        }
+      }
+    }
+  }
 
-resource "aws_eks_addon" "ebs_csi_driver" {
-  cluster_name      = aws_eks_cluster.example.name
-  addon_name        = "ebs-csi"
-  resolve_conflicts = "OVERWRITE"
+    depends_on = [
+    aws_iam_role.eks_cluster_role,
+    aws_iam_policy.eks_policy,
+    aws_iam_role_policy_attachment.eks_role_policy_attachment,
+    aws_iam_role_policy_attachment.eks_node_policy_attachment
+  ]
+
+  tags = {
+    Environment = "infra"
+    Terraform   = "true"
+  }
 }
