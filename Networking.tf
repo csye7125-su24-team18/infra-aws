@@ -17,7 +17,7 @@ resource "aws_internet_gateway" "terraform_igw" {
 
 resource "aws_security_group" "eks_sg_tf" {
   vpc_id = aws_vpc.terraform_vpc.id
-
+  depends_on =  [aws_vpc.terraform_vpc]
   ingress {
     from_port   = 0
     to_port     = 65535

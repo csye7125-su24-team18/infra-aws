@@ -103,6 +103,7 @@ resource "aws_iam_policy" "eks_policy" {
 }
 
 
+
 resource "aws_iam_role_policy_attachment" "eks_role_policy_attachment" {
   role       = aws_iam_role.eks_cluster_role.name
   policy_arn = aws_iam_policy.eks_policy.arn

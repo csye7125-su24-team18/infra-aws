@@ -18,13 +18,13 @@ module "eks" {
   # ]
 
   # Enable Control plane logging
-  # enable_control_plane_log_types = [
-  #   "api",
-  #   "audit",
-  #   "authenticator",
-  #   "controllerManager",
-  #   "scheduler"
-  # ]
+  cluster_enabled_log_types = [
+    "api",
+    "audit",
+    "authenticator",
+    "controllerManager",
+    "scheduler"
+  ]
 
   cluster_addons = {
     coredns = {
@@ -37,16 +37,16 @@ module "eks" {
       most_recent = true
     }
     # Install Amazon EKS Pod Identity Agent EKS add-on
-    pod-identity-webhook = {
-      most_recent = true
-    }
+    # pod-identity-webhook = {
+    #   version = "1.7.0"
+    # }
   }
 
 
-  vpc_id                   = "aws_vpc.terraform_vpc.id"
-  subnet_ids               = [aws_subnet.public_tf_subnet[0].id, aws_subnet.public_tf_subnet[1].id, aws_subnet.public_tf_subnet[2].id]
-  control_plane_subnet_ids = [aws_subnet.public_tf_subnet[0].id, aws_subnet.public_tf_subnet[1].id, aws_subnet.public_tf_subnet[2].id]
-
+  vpc_id                   = aws_vpc.terraform_vpc.id
+  subnet_ids               = [aws_subnet.private_tf_subnet[0].id, aws_subnet.private_tf_subnet[1].id, aws_subnet.private_tf_subnet[2].id]
+  control_plane_subnet_ids = [aws_subnet.private_tf_subnet[0].id, aws_subnet.private_tf_subnet[1].id, aws_subnet.private_tf_subnet[2].id]
+  iam_role_arn = aws_iam_policy.eks_policy.arn
   # # EKS Managed Node Group(s)
   # eks_managed_node_group_defaults = {
   #   instance_types = ["m6i.large", "m5.large", "m5n.large", "m5zn.large"]
@@ -68,23 +68,23 @@ module "eks" {
   # To add the current caller identity as an administrator
   # enable_cluster_creator_admin_permissions = true
 
-  access_entries = {
-    # One access entry with a policy associated
-    cluster = {
-      kubernetes_groups = []
-      principal_arn     = "arn:aws:iam::058264467072:root"
+  # access_entries = {
+  #   # One access entry with a policy associated
+  #   cluster = {
+  #     kubernetes_groups = []
+  #     principal_arn     = "arn:aws:iam::058264467072:root"
 
-      policy_associations = {
-        test = {
-          policy_arn = "aws_iam_policy.eks_policy.arn"
-          access_scope = {
-            namespaces = ["default"]
-            type       = "namespace"
-          }
-        }
-      }
-    }
-  }
+  #     policy_associations = {
+  #       test = {
+  #         policy_arn = aws_iam_policy.eks_policy.arn
+  #         access_scope = {
+  #           namespaces = ["default"]
+  #           type       = "namespace"
+  #         }
+  #       }
+  #     }
+  #   }
+  # }
 
     depends_on = [
     aws_iam_role.eks_cluster_role,
