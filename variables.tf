@@ -13,3 +13,7 @@ variable "vpcname" {
 variable "igwname" {
   default = "terraform-igw"
 }
+
+variable "cluster_name"{
+  default = "dev-cluster"
+}
