@@ -9,11 +9,11 @@ module "eks" {
   version = "~> 20.0"
 
   cluster_name                             = var.cluster_name
-  cluster_version                          = "1.29"
-  authentication_mode                      = "API_AND_CONFIG_MAP"
+  cluster_version                          = var.cluster_version
+  authentication_mode                      = var.authentication_mode
   cluster_endpoint_public_access           = true
   cluster_endpoint_private_access          = true
-  cluster_ip_family                        = "ipv4"
+  cluster_ip_family                        = var.cluster_ip_family
   create_iam_role                          = false
   enable_cluster_creator_admin_permissions = true
   cluster_security_group_id                = aws_security_group.eks_sg_tf.id
@@ -54,24 +54,24 @@ module "eks" {
   }
 
 
-  vpc_id                   = aws_vpc.terraform_vpc.id
-  subnet_ids               = [aws_subnet.private_tf_subnet[0].id, aws_subnet.private_tf_subnet[1].id, aws_subnet.private_tf_subnet[2].id]
+  vpc_id     = aws_vpc.terraform_vpc.id
+  subnet_ids = [aws_subnet.private_tf_subnet[0].id, aws_subnet.private_tf_subnet[1].id, aws_subnet.private_tf_subnet[2].id]
   # control_plane_subnet_ids = [aws_subnet.private_tf_subnet[0].id, aws_subnet.private_tf_subnet[1].id, aws_subnet.private_tf_subnet[2].id]
   iam_role_arn             = aws_iam_role.eks_cluster_role.arn
   openid_connect_audiences = ["sts.amazonaws.com"]
 
   eks_managed_node_groups = {
     node_group = {
-      ami_type        = "AL2_x86_64"
-      min_size        = 1
-      max_size        = 3
-      desired_size    = 2
-      update_config   = {max_unavailable = 1} 
-      instance_types  = ["c3.large"]
-      capacity_type   = "ON_DEMAND"
-      create_iam_role = false
-      iam_role_arn    = aws_iam_role.eks_node_role.arn
-      iam_role_additional_policies = {AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"}
+      ami_type                     = var.ami_type
+      min_size                     = var.min_size
+      max_size                     = var.max_size
+      desired_size                 = var.desired_size
+      update_config                = { max_unavailable = var.max_unavailable }
+      instance_types               = ["${var.instance_types}"]
+      capacity_type                = var.capacity_type
+      create_iam_role              = false
+      iam_role_arn                 = aws_iam_role.eks_node_role.arn
+      iam_role_additional_policies = { AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy" }
     }
   }
   depends_on = [
@@ -128,8 +128,8 @@ resource "aws_iam_role" "eks_ebs_csi_driver_role" {
         "Action" = "sts:AssumeRoleWithWebIdentity",
         "Condition" = {
           "StringEquals" = {
-            "${replace(module.eks.oidc_provider_arn, "/^(.*provider/)/", "")}:aud": "sts.amazonaws.com",
-            "${replace(module.eks.oidc_provider_arn, "/^(.*provider/)/", "")}:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+            "${replace(module.eks.oidc_provider_arn, "/^(.*provider/)/", "")}:aud" : "sts.amazonaws.com",
+            "${replace(module.eks.oidc_provider_arn, "/^(.*provider/)/", "")}:sub" : "system:serviceaccount:kube-system:ebs-csi-controller-sa"
           }
         }
       }
