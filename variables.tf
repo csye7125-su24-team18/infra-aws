@@ -1,43 +1,80 @@
-# variable "region" {
-#   default = "us-east-1"
-# }
+variable "region" {
+  description = "The AWS region to deploy to"
+  type        = string
+  default     = "us-east-1"  # You can provide a default value or leave it without a default.
+}
 
-# //Setup VPC variables
-# variable "vpc_cidr" {
-#   default = "10.0.0.0/16"
-# }
-# variable "vpcname" {
-#   default = "terraform-vpc"
-# }
+variable "vpc_cidr" {
+  description = "The CIDR block for the VPC"
+  type        = string
+}
 
-# variable "igwname" {
-#   default = "terraform-igw"
-# }
+variable "vpcname" {
+  description = "The name of the VPC"
+  type        = string
+}
 
-# variable "cluster_name" {
-#   default = "dev-cluster"
-# }
+variable "igwname" {
+  description = "The name of the Internet Gateway"
+  type        = string
+}
 
-# variable "account_id" {
-#   default = "339712789902"
-# }
+variable "cluster_name" {
+  description = "The name of the EKS cluster"
+  type        = string
+}
 
-# variable "cluster_version" {
-#   default = "1.29"
-# }
+variable "account_id" {
+  description = "The AWS account ID"
+  type        = string
+}
 
-# variable "authentication_mode" {
-#   default = "API_AND_CONFIG_MAP"
-# }
+variable "cluster_version" {
+  description = "The version of the EKS cluster"
+  type        = string
+}
 
-# variable "cluster_ip_family" {
-#   default = "ipv4"
-# }
+variable "authentication_mode" {
+  description = "The authentication mode for the EKS cluster"
+  type        = string
+}
 
-# variable "ami_type" {
-#   default = "AL2_x86_64"
-# }
+variable "cluster_ip_family" {
+  description = "The IP family for the EKS cluster"
+  type        = string
+}
 
-# variable "capacity_type" {
-#   default = "ON_DEMAND"
-# }
+variable "ami_type" {
+  description = "The AMI type for the node group"
+  type        = string
+}
+
+variable "capacity_type" {
+  description = "The capacity type for the node group"
+  type        = string
+}
+
+variable "min_size" {
+  description = "The minimum size of the node group"
+  type        = number
+}
+
+variable "max_size" {
+  description = "The maximum size of the node group"
+  type        = number
+}
+
+variable "desired_size" {
+  description = "The desired size of the node group"
+  type        = number
+}
+
+variable "max_unavailable" {
+  description = "The maximum number of unavailable nodes during a rolling update"
+  type        = number
+}
+
+variable "instance_types" {
+  description = "The instance types for the node group"
+  type        = string
+}
