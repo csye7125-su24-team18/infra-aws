@@ -7,6 +7,7 @@ provider "helm" {
 }
 
 
+
 resource "helm_release" "kafka" {
   name       = "kafka"
   repository = "https://charts.bitnami.com/bitnami"
@@ -17,7 +18,6 @@ resource "helm_release" "kafka" {
 
   depends_on = [module.eks.cluster_name]
 }
-
 
 
 resource "kubernetes_secret" "postgresql" {
@@ -107,44 +107,3 @@ resource "helm_release" "postgresql1" {
   depends_on = [module.eks.cluster_name]
 }
 
-# resource "helm_release" "postgres" {
-#   name       = "postgres"
-#   namespace  = "default"  # Specify your desired namespace
-#   chart      = "postgresql"  # Path to unzipped PostgreSQL Helm chart directory
-#   values     = [file("values.yaml")]  # Path to your values.yaml file
-
-#   set {
-#     name  = "image.repository"
-#     value = "hsa404/webapp-db"  # Replace with your private Docker image repository
-#   }
-
-#   set {
-#     name  = "image.tag"
-#     value = "latest"  # Replace with your image tag
-#   }
-
-#   set {
-#     name  = "image.pullSecrets"
-#     value = kubernetes_secret.docker_registry_credentials.metadata.0.name  # Reference to the Kubernetes Secret containing Docker registry credentials
-#   }
-#   depends_on = [
-#     module.eks,
-#     kubernetes_secret.docker_registry_credentials
-#   ]
-# }
-
-# resource "null_resource" "create_kafka_topic" {
-#   depends_on = [helm_release.kafka]
-
-#   provisioner "local-exec" {
-#     command = <<-EOT
-#       sleep 60  # Wait for Kafka to be fully up
-#       kubectl apply -f create-kafka-topic-job.yaml
-#     EOT
-#   }
-
-#   provisioner "local-exec" {
-#     when    = destroy
-#     command = "kubectl delete -f create-kafka-topic-job.yaml"
-#   }
-# }

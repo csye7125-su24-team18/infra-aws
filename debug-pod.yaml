@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kafka-debug
+  namespace: kafka
+spec:
+  containers:
+  - name: kafka-debug
+    image: confluentinc/cp-kafka:latest
+    command: ['sleep', '3600']
