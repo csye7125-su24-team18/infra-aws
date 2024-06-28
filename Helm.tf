@@ -19,6 +19,7 @@ resource "helm_release" "kafka" {
   depends_on = [module.eks.cluster_name]
 }
 
+
 resource "kubernetes_secret" "postgresql" {
   metadata {
     name      = "postgresql"

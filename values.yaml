@@ -9,6 +9,7 @@ persistence:
 
 
 
+
 controller:
   replicaCount: 3
   resources:
@@ -18,6 +19,7 @@ controller:
     requests:
       cpu: 1
       memory: 2048Mi
+
 
 
 
@@ -34,6 +36,7 @@ listeners:
     name: INTERBROKER
     protocol: PLAINTEXT
     port: 9094
+
 
 
 provisioning:
