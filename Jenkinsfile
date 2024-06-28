@@ -11,17 +11,22 @@ pipeline {
         stage('Checkout PR Branch') {
             steps {
                 script {
-                    // Fetch the latest changes from the origin using credentials
-                    withCredentials([usernamePassword(credentialsId: GITHUB_PAT, usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
-                        sh 'git config --global credential.helper store'
-                        sh 'echo "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com" > ~/.git-credentials'
+                    withCredentials([usernamePassword(credentialsId: 'GITHUB_PAT', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+                        // Use HTTPS URL with credentials
+                        def repoUrl = "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/csye7125-su24-team18/webapp-cve-processor.git"
+                        
                         // Fetch all branches including PR branches
-                        sh 'git fetch origin +refs/pull/*/head:refs/remotes/origin/pr/*'
+                        sh "git fetch ${repoUrl} +refs/pull/*:refs/remotes/origin/pr/*"
+                        
                         // Dynamically fetch the current PR branch name using environment variables
                         def prBranch = env.CHANGE_BRANCH
+                        def prNumber = env.CHANGE_ID
+                        
                         echo "PR Branch: ${prBranch}"
+                        echo "PR Number: ${prNumber}"
+                        
                         // Checkout the PR branch
-                        sh "git checkout -B ${prBranch} origin/pr/${env.CHANGE_ID}"
+                        sh "git checkout -B ${prBranch} origin/pr/${prNumber}"
                     }
                 }
             }
