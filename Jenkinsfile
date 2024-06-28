@@ -13,7 +13,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'github_pat', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
                         // Use HTTPS URL with credentials
-                        def repoUrl = "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/csye7125-su24-team18/webapp-cve-processor.git"
+                        def repoUrl = "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/csye7125-su24-team18/infra-aws.git"
                         
                         // Fetch all branches including PR branches
                         sh "git fetch ${repoUrl} +refs/pull/*:refs/remotes/origin/pr/*"
