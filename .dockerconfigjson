@@ -1,0 +1,11 @@
+{
+    "auths": {
+      "https://index.docker.io/v1/": {
+        "username": "hsa404",
+        "password": "dckr_pat_Sdlt8-ohNUJ0w0meIBSM2hkvP0U",
+        "email": "agrawal.harsh@northeastern.edu",
+        "auth": "aHNhNDA0OmRja3JfcGF0X1NkbHQ4LW9oTlVKMHcwbWVJQlNNMmhrdlAwVQ=="
+      }
+    }
+  }
+  

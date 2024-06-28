@@ -1,0 +1,58 @@
+kraft:
+  enabled: true
+
+replicaCount: 3
+
+persistence:
+  enabled: true
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2048Mi
+  requests:
+    cpu: 1000m
+    memory: 2048Mi
+
+controller:
+  replicaCount: 3
+
+extraConfig: |
+  process.roles=broker,controller
+
+listeners:
+  client:
+    name: PLAINTEXT
+    protocol: PLAINTEXT
+    port: 9092
+  controller:
+    name: CONTROLLER
+    protocol: PLAINTEXT
+    port: 9093
+
+externalAccess:
+  enabled: false
+
+provisioning:
+  enabled: true
+  topics:
+    - name: 'cve'
+      partitions: 2
+      replicationFactor: 2
+
+zookeeper:
+  enabled: false
+
+sasl:
+  client:
+    enabled: false
+  interBroker:
+    enabled: false
+
+tls:
+  enabled: false
+
+# Add the advertised listeners configuration
+configurationOverrides:
+  "advertised.listeners": "PLAINTEXT://kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9092"

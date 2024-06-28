@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-kafka-topic
+  namespace: kafka
+spec:
+  template:
+    spec:
+      containers:
+      - name: kafka
+        image: bitnami/kafka:3.7.0
+        # command:
+        #   - "sh"
+        #   - "-c"
+        #   - |
+        #     kafka-topics.sh --create --topic cve --partitions 3 --replication-factor 3 --bootstrap-server kafka:9092 \
+        #     --command-config /tmp/kafka-config.properties
+        #     cat <<EOF > /tmp/kafka-config.properties
+        #     security.protocol=SASL_PLAINTEXT
+        #     sasl.mechanism=SCRAM-SHA-256
+        #     sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username="user1" password="password1";
+        #     EOF
+  backoffLimit: 4

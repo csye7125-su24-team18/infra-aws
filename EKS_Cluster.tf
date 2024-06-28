@@ -91,29 +91,7 @@ module "eks" {
   }
 }
 
-#ebs driver role
-# resource "aws_iam_role" "eks_ebs_csi_driver_role" {
-#   name = "${var.cluster_name}-eks_ebs_csi_driver_role"
-#   assume_role_policy = jsonencode({
-#     "Version" = "2012-10-17",
-#     "Statement" = [
-#       {
-#         "Action" = "sts:AssumeRoleWithWebIdentity",
-#         "Effect" = "Allow",
-#         "Principal" = {
-#           "Federated" = module.eks.oidc_provider_arn
-#         }
-#         "Condition" : {
-#           "StringEquals" : {
-#             "${module.eks.oidc_provider}:sub" : "sts.amazonaws.com"
-#             "${module.eks.oidc_provider}:aud" : "system:serviceaccount:kube-system:ebs-csi-controller-sa"
 
-#           }
-#         }
-#       }
-#     ]
-#   })
-# }
 
 resource "aws_iam_role" "eks_ebs_csi_driver_role" {
   name = "${var.cluster_name}-eks_ebs_csi_driver_role"
@@ -174,6 +152,9 @@ resource "aws_iam_policy" "eks_ebs_csi_driver_policy" {
 resource "aws_iam_role_policy_attachment" "eks_ebs_csi_driver_policy_attachment1" {
   role       = aws_iam_role.eks_ebs_csi_driver_role.name
   policy_arn = "arn:aws:iam::${var.account_id}:policy/${var.cluster_name}-eks_ebs_csi_driver_policy"
+  depends_on = [
+    aws_iam_policy.eks_ebs_csi_driver_policy
+  ]
 }
 
 # resource "aws_iam_role_policy" "eks_ebs_csi_driver_policy" {
@@ -216,6 +197,21 @@ resource "aws_iam_role_policy_attachment" "eks_ebs_csi_existing_driver_policy_at
   role       = aws_iam_role.eks_ebs_csi_driver_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
+
+data "aws_eks_cluster" "cluster" {
+  name = module.eks.cluster_name
+  depends_on = [
+    module.eks
+  ]
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_name
+  depends_on = [
+    module.eks
+  ]
+}
+
 
 #  encryption_config {
 #     resources = ["secrets"]

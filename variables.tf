@@ -1,7 +1,7 @@
 variable "region" {
   description = "The AWS region to deploy to"
   type        = string
-  default     = "us-east-1"  # You can provide a default value or leave it without a default.
+  default     = "us-east-1" # You can provide a default value or leave it without a default.
 }
 
 variable "vpc_cidr" {
@@ -76,5 +76,10 @@ variable "max_unavailable" {
 
 variable "instance_types" {
   description = "The instance types for the node group"
+  type        = string
+}
+
+variable "postgresql_password" {
+  description = "The password for the PostgreSQL database"
   type        = string
 }
