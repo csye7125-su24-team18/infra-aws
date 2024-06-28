@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout PR Branch') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'GITHUB_PAT', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+                    withCredentials([usernamePassword(credentialsId: 'github_pat', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
                         // Use HTTPS URL with credentials
                         def repoUrl = "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/csye7125-su24-team18/webapp-cve-processor.git"
                         
