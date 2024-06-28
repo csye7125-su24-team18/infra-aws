@@ -14,19 +14,22 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'github_pat', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
                         // Use HTTPS URL with credentials
                         def repoUrl = "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/csye7125-su24-team18/infra-aws.git"
-                        
-                        // Fetch all branches including PR branches
-                        sh "git fetch ${repoUrl} +refs/pull/*:refs/remotes/origin/pr/*"
-                        
-                        // Dynamically fetch the current PR branch name using environment variables
-                        def prBranch = env.CHANGE_BRANCH
-                        def prNumber = env.CHANGE_ID
-                        
-                        echo "PR Branch: ${prBranch}"
-                        echo "PR Number: ${prNumber}"
-                        
-                        // Checkout the PR branch
-                        sh "git checkout -B ${prBranch} origin/pr/${prNumber}"
+                def prNumber = env.CHANGE_ID
+                def prAuthor = env.CHANGE_AUTHOR
+                def prBranch = env.CHANGE_BRANCH
+                
+                echo "PR Number: ${prNumber}"
+                echo "PR Author: ${prAuthor}"
+                echo "PR Branch: ${prBranch}"
+                
+                // Fetch the PR
+                sh "git fetch ${repoUrl} +refs/pull/${prNumber}/head:pr/${prNumber}"
+                
+                // Checkout the PR branch
+                sh "git checkout pr/${prNumber}"
+                
+                // Ensure we're on the correct branch
+                sh "git branch"
                     }
                 }
             }
