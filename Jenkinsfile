@@ -88,6 +88,4 @@ pipeline {
     
     
     }
-    post {
-    }
 }
