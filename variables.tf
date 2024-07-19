@@ -88,3 +88,8 @@ variable "chart_path" {
   description = "The path to the Helm chart"
   type        = string
 }
+
+variable "cluster_eks" {
+  description = "The EKS cluster configuration"
+  type        = string
+}

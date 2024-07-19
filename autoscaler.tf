@@ -1,6 +1,6 @@
-locals{
+locals {
   oidc_provider_url = replace(module.eks.cluster_oidc_issuer_url, "https://", "")
-  account_id = split(":", module.eks.cluster_arn)[4]
+  account_id        = split(":", module.eks.cluster_arn)[4]
   oidc_provider_arn = "arn:aws:iam::${local.account_id}:oidc-provider/${local.oidc_provider_url}"
 }
 
@@ -12,7 +12,7 @@ resource "aws_iam_policy" "eks-autoscaler-policy" {
       {
         "Effect" : "Allow",
         "Action" : [
-         "autoscaling:DescribeAutoScalingGroups",
+          "autoscaling:DescribeAutoScalingGroups",
           "autoscaling:DescribeAutoScalingInstances",
           "autoscaling:DescribeLaunchConfigurations",
           "autoscaling:DescribeTags",
@@ -44,12 +44,12 @@ resource "aws_iam_role" "eks-autoscaler-role" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-           "${local.oidc_provider_url}:sub" : "system:serviceaccount:autoscaler:cluster-autoscaler"
+            "${local.oidc_provider_url}:sub" : "system:serviceaccount:autoscaler:cluster-autoscaler"
           }
         }
-    }
+      }
     ]
-    })
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "eks-autocaler-policy-attachment" {
@@ -63,14 +63,14 @@ resource "aws_iam_role_policy_attachment" "eks-autocaler-policy-attachment" {
 # }
 
 
-resource "helm_release" "autoscaler"{
-  name = "autoscaler"
-  namespace = kubernetes_namespace.autoscaler.metadata[0].name
+resource "helm_release" "autoscaler" {
+  name       = "autoscaler"
+  namespace  = kubernetes_namespace.autoscaler.metadata[0].name
   repository = "https://github.com/csye7125-su24-team18/helm-eks-autoscaler"
-  chart = "./charts/eks-cluster-autoscaler-0.1.0.tgz"
-  version = "0.1.0"
+  chart      = "./charts/eks-cluster-autoscaler-0.1.0.tgz"
+  version    = "0.1.0"
   set {
-    name = "annotations.role_arn"
+    name  = "annotations.role_arn"
     value = aws_iam_role.eks-autoscaler-role.arn
   }
   values = [
