@@ -41,3 +41,16 @@ resource "kubernetes_namespace" "db" {
     name = "db"
   }
 }
+resource "kubernetes_namespace" "autoscaler" {
+  metadata {
+    annotations = {
+      name = "autoscaler"
+    }
+
+    labels = {
+      mylabel = "autoscaler"
+    }
+
+    name = "autoscaler"
+  }
+}
