@@ -83,3 +83,8 @@ variable "postgresql_password" {
   description = "The password for the PostgreSQL database"
   type        = string
 }
+
+variable "chart_path" {
+  description = "The path to the Helm chart"
+  type        = string
+}
