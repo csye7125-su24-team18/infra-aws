@@ -19,7 +19,6 @@ module "eks" {
   cluster_security_group_id                = aws_security_group.eks_sg_tf.id
 
 
-
   # Enable Control plane logging
   cluster_enabled_log_types = [
     "api",
@@ -47,6 +46,14 @@ module "eks" {
       most_recent              = true
       service_account_role_arn = aws_iam_role.eks_ebs_csi_driver_role.arn
     }
+
+    vpc-cni = {
+      most_recent = var.cluster_eks["cluster_addons"]["vpc-cni"]["most_recent"]
+      configuration_values = jsonencode({
+        enableNetworkPolicy = "true"
+      })
+    }
+
     # Install Amazon EKS Pod Identity Agent EKS add-on
     # pod-identity-webhook = {
     #   version = "1.7.0"
