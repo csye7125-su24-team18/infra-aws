@@ -88,11 +88,8 @@ variable "chart_path" {
   description = "The path to the Helm chart"
   type        = string
 }
-<<<<<<< HEAD
 
 variable "cluster_eks" {
   description = "The EKS cluster configuration"
-  type        = string
+  type        = map(any)
 }
-=======
->>>>>>> fde3f0a712861f2b1a7e0d5a1d548f79f479a896
