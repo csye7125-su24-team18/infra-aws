@@ -91,5 +91,5 @@ variable "chart_path" {
 
 variable "cluster_eks" {
   description = "The EKS cluster configuration"
-  type        = string
+  type        = map(any)
 }
