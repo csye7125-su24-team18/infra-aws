@@ -54,3 +54,17 @@ resource "kubernetes_namespace" "autoscaler" {
     name = "autoscaler"
   }
 }
+
+resource "kubernetes_namespace" "operator" {
+  metadata {
+    annotations = {
+      name = "operator"
+    }
+
+    labels = {
+      mylabel = "operator"
+    }
+
+    name = "operator"
+  }
+}
