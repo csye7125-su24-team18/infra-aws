@@ -21,6 +21,8 @@ resource "aws_iam_role_policy_attachment" "eks_role_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
+
+
 # resource "aws_iam_role_policy_attachment" "eks_ebs_role_policy_attachment" {
 #   role       = aws_iam_role.eks_cluster_role.name
 #   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
@@ -81,3 +83,4 @@ resource "aws_iam_role_policy_attachment" "eks_node_ebs_policy" {
 #   thumbprint_list = [data.aws_eks_cluster.example.identity.oidc.issuer]
 #   url             = data.aws_eks_cluster.example.identity.oidc.issuer
 # }
+
