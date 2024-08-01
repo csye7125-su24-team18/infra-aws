@@ -68,3 +68,32 @@ resource "kubernetes_namespace" "operator" {
     name = "operator"
   }
 }
+
+resource "kubernetes_namespace" "logging" {
+  metadata {
+    annotations = {
+      name = "logging"
+    }
+
+    labels = {
+      mylabel = "logging"
+    }
+
+    name = "logging"
+  }
+}
+
+resource "kubernetes_namespace" "monitoring" {
+  metadata {
+    annotations = {
+      name = "monitoring"
+    }
+
+    labels = {
+      mylabel = "monitoring"
+    }
+
+    name = "monitoring"
+  }
+}
+
