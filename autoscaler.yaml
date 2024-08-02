@@ -55,3 +55,50 @@
 # #   fullnameOverride: "my-app-service-account"  # Optionally override the full name
 # #   # annotations: {}  # Optionally add annotations to the service account
 # #   automount: true  # Adjust automount setting as needed
+
+replicas: 1
+namespace: kube-system
+image:
+  repository: registry.k8s.io/autoscaling/cluster-autoscaler
+  tag: v1.29.3
+  pullPolicy: Always
+ 
+resources:
+  limits:
+    cpu: 100m
+    memory: 300Mi
+  requests:
+    cpu: 100m
+    memory: 300Mi
+ 
+deployment:
+  awsRegion: us-east-1
+  AWS_ACCESS_KEY_ID: AKIA3FLD6LS4Z6DZJJ3O
+  AWS_SECRET_ACCESS_KEY: 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
+ 
+rbac:
+  serviceAccountName: cluster-autoscaler
+  clusterRoleName: cluster-autoscaler
+  roleName: cluster-autoscaler
+  roleBindingName: cluster-autoscaler
+  clusterRoleBindingName: cluster-autoscaler
+ 
+autoscalerNamespace: autoscaler
+ 
+annotations:
+  eks.amazonaws.com/role-arn: arn:aws:iam::339712789902:role/AmazonEKSClusterAutoscalerRole
+ 
+autoscaler:
+  cloudProvider: aws
+  expander: least-waste
+  nodeGroupAutoDiscovery: asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/EKS-Cluster
+  balanceSimilarNodeGroups: true
+  skipNodesWithLocalStorage: false
+  skipNodesWithSystemPods: false
+ 
+imagePullSecrets:
+  - name: myregistrykey
+ 
+secrets:
+  myregistrykey:
+    dockerconfigjson: "eyJhdXRocyI6eyJkb2NrZXIuaW8iOnsidXNlcm5hbWUiOiJhbnUzOTgiLCJwYXNzd29yZCI6ImRja3JfcGF0XzFYRW0wQXF5UHRBSWZBYVctQmRRN1RLOGZnOCIsImVtYWlsIjoic2VudGhpbG5hdGhhbi5hQG5vcnRoZWFzdGVybi5lZHUiLCJhdXRoIjoiWVc1MU16azRPbVJqYTNKZmNHRjBYekZZUlcwd1FYRjVVSFJCU1daQllWY3RRbVJSTjFSTE9HWm5PQT09In19fQ=="

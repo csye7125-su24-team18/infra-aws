@@ -1,3 +1,6 @@
+# Configuration values for Istio
+# The `istio.yaml` file should contain these values
+
 global:
   proxy:
     resources:
