@@ -9,7 +9,7 @@ terraform {
 }
 
 provider "aws" {
-  profile = "dev" //Need to change this to your profile name
+  profile = "infra" //Need to change this to your profile name
   region  = var.region
 }
 

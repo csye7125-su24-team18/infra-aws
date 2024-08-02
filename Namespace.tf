@@ -5,7 +5,8 @@ resource "kubernetes_namespace" "cve_processor" {
     }
 
     labels = {
-      mylabel = "cve-processor"
+      mylabel = "cve-processor",
+        istio-injection = "enabled"
     }
 
     name = "cve-processor"
@@ -20,7 +21,8 @@ resource "kubernetes_namespace" "kafka" {
     }
 
     labels = {
-      mylabel = "kafka"
+      mylabel = "kafka",
+        istio-injection = "enabled"
     }
 
     name = "kafka"
@@ -35,7 +37,9 @@ resource "kubernetes_namespace" "db" {
     }
 
     labels = {
-      mylabel = "db"
+      mylabel = "db",
+      istio-injection = "enabled"
+      
     }
 
     name = "db"
@@ -48,7 +52,8 @@ resource "kubernetes_namespace" "autoscaler" {
     }
 
     labels = {
-      mylabel = "autoscaler"
+      mylabel = "autoscaler",
+      istio-injection = "enabled"
     }
 
     name = "autoscaler"
@@ -62,7 +67,8 @@ resource "kubernetes_namespace" "operator" {
     }
 
     labels = {
-      mylabel = "operator"
+      mylabel = "operator",
+      istio-injection = "enabled"
     }
 
     name = "operator"
@@ -76,7 +82,8 @@ resource "kubernetes_namespace" "logging" {
     }
 
     labels = {
-      mylabel = "logging"
+      mylabel = "logging",
+      istio-injection = "enabled"
     }
 
     name = "logging"
@@ -90,10 +97,25 @@ resource "kubernetes_namespace" "monitoring" {
     }
 
     labels = {
-      mylabel = "monitoring"
+      mylabel = "monitoring",
+      istio-injection = "enabled"
     }
 
     name = "monitoring"
   }
 }
 
+
+resource "kubernetes_namespace" "istio" {
+  metadata {
+    name = "istio-system",
+    istio-injection = "enabled"
+  }
+}
+
+resource "kubernetes_namespace" "cert_manager" {
+  metadata {
+    name = "cert-manager",
+    istio-injection = "enabled"
+  }
+}
