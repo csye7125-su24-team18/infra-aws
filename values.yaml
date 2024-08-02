@@ -46,84 +46,17 @@ provisioning:
       partitions: 2
       replicationFactor: 2
 
-
-# Fluent-bit values
-# image:
-#   repository: public.ecr.aws/aws-observability/aws-for-fluent-bit
-#   tag: 2.32.2.20240516
-#   pullPolicy: IfNotPresent
- 
-# Uncomment and modify these fields if you need them
-# imagePullSecrets: []
-# nameOverride: ""
-# fullnameOverride: ""
-# podSecurityContext: {}
-# containerSecurityContext: {}
- 
-# rbac:
-#   pspEnabled: false
- 
-# service:
-#   extraService: |
-#     HTTP_Server  On
-#     HTTP_Listen  0.0.0.0
-#     HTTP_PORT    2020
-#     Health_Check On
-#     HC_Errors_Count 5
-#     HC_Retry_Failure_Count 5
-#     HC_Period 5
-#   parsersFiles:
-#     - /fluent-bit/parsers/parsers.conf
- 
-# input:
-#   enabled: true
-#   tag: "kube.*"
-#   path: "/var/log/containers/*.log"
-#   db: "/var/log/flb_kube.db"
-#   multilineParser: "docker, cri"
-#   memBufLimit: "5MB"
-#   skipLongLines: "On"
-#   refreshInterval: 10
- 
-# Uncomment and modify these fields if you need them
-# filter:
-#   enabled: true
-#   match: "kube.*"
-#   kubeURL: "https://kubernetes.default.svc.cluster.local:443"
-#   mergeLog: "On"
-#   mergeLogKey: "data"
-#   keepLog: "On"
-#   k8sLoggingParser: "On"
-#   k8sLoggingExclude: "On"
-#   bufferSize: "32k"
- 
-# cloudWatch:
-#   enabled: false
-#   match: "*"
-#   region: "us-east-1"
-#   logGroupName: "/aws/eks/fluentbit-cloudwatch/logs"
-#   autoCreateGroup: true
- 
-# cloudWatchLogs:
-#   enabled: true
-#   match: "*"
-#   region: "us-east-2"
-#   logGroupName: "/aws/eks/fluentbit-cloudwatch/logs"
-#   logStreamPrefix: "fluentbit-"
-#   autoCreateGroup: true
- 
-# serviceAccount:
-#   create: true
-#   annotations:
-#     eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/FluentBitRole
-#   name: fluent-bit
- 
-# Add this if needed
-# extraOutputs: |
-#   [OUTPUT]
-#       Name cloudwatch_logs
-#       Match *
-#       region us-east-1
-#       log_group_name /aws/eks/my-cluster/fluent-bit
-#       log_stream_prefix from-fluent-bit-
-#       auto_create_group true
+metrics:
+  jmx:
+    enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring
+    labels:
+      release: kube-prometheus-stack
+    selector:
+      app.kubernetes.io/name: kafka
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "{{ .Values.metrics.jmx.service.ports.metrics }}"
+      prometheus.io/path: "/metrics"

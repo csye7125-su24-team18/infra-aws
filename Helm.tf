@@ -14,6 +14,7 @@ resource "helm_release" "kafka" {
   chart      = "kafka"
   version    = "29.3.4"
   namespace  = kubernetes_namespace.kafka.metadata[0].name
+  timeout    = 600
   values     = ["${file("values.yaml")}"]
 
   depends_on = [module.eks.cluster_name]
@@ -105,5 +106,39 @@ resource "helm_release" "postgresql1" {
   }
 
   depends_on = [module.eks.cluster_name]
+
+  set {
+    name  = "metrics.enabled"
+    value = "true"
+  }
+  set {
+    name  = "metrics.serviceMonitor.enabled"
+    value = "true"
+  }
+  set {
+    name  = "metrics.serviceMonitor.namespace"
+    value = "monitoring"
+  }
+  set {
+    name  = "metrics.serviceMonitor.labels.release"
+    value = "kube-prometheus-stack"
+  }
+  set {
+    name  = "metrics.serviceMonitor.annotations.prometheus.io/scrape"
+    value = "true"
+  }
+  set {
+    name  = "metrics.serviceMonitor.annotations.prometheus.io/port"
+    value = "9187"
+  }
+  set {
+    name  = "metrics.serviceMonitor.annotations.prometheus.io/path"
+    value = "/metrics"
+  }
+  set {
+    name  = "metrics.serviceMonitor.selector.matchLabels.app.kubernetes.io/name"
+    value = "postgresql"
+  }
 }
+
 
