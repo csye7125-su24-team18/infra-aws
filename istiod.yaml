@@ -1,0 +1,40 @@
+service: 
+  annotations:
+   external-dns.alpha.kubernetes.io/hostname: "grafana.harsh-agrawal.me"
+   service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+   service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+   service.beta.kubernetes.io/aws-load-balancer-attributes: "load_balancing.cross_zone.enabled=true"
+
+# controller:
+#   service:
+#     annotations:
+#       external-dns.alpha.kubernetes.io/hostname: "grafana.harsh-agrawal.me"
+#       service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+#       service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+#       service.beta.kubernetes.io/aws-load-balancer-attributes: "load_balancing.cross_zone.enabled=true"
+
+
+
+meshConfig:
+  defaultConfig:
+    holdApplicationUntilProxyStarts: true
+  accessLogFile: /dev/stdout
+ 
+
+global:
+  proxy:
+    accessLogFile: "/dev/stdout"
+    accessLogEncoding: "JSON"
+  logAsJson: true
+  logging:
+    level: "default:info"
+
+telemetry:
+  v2:
+    enabled: true
+    prometheus:
+      enabled: true
+      filter: { }
+      scrape: true
+    accessLogging: true'
+ 

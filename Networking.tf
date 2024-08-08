@@ -1,7 +1,7 @@
 resource "aws_vpc" "terraform_vpc" {
-  cidr_block           = var.vpc_cidr
-  enable_dns_support   = true
-  enable_dns_hostnames = true
+  cidr_block = var.vpc_cidr
+  #   enable_dns_support   = true
+  #   enable_dns_hostnames = true
   tags = {
     Name = var.vpcname
   }
@@ -23,6 +23,21 @@ resource "aws_security_group" "eks_sg_tf" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  # ingress {
+  #   from_port = 15017
+  #   to_port   = 15017
+  #   protocol  = "tcp"
+  #   # Assuming you want to allow traffic from within the VPC
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
+
+  ingress {
+    from_port = 15000
+    to_port   = 16000
+    protocol  = "tcp"
+    # Assuming you want to allow traffic from within the VPC
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   egress {
     from_port   = 0
@@ -39,7 +54,14 @@ output "vpc_id" {
   value = aws_vpc.terraform_vpc.id
 }
 
-
+# resource "aws_security_group_rule" "allow_istio_webhook" {
+#   type        = "ingress"
+#   from_port    = 15017
+#   to_port      = 15017
+#   protocol     = "tcp"
+#   security_group_id = ""
+#   cidr_blocks  = ["0.0.0.0/0"]  # Update this as per your security requirements
+# }
 
 
 

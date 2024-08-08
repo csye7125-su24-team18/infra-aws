@@ -1,32 +1,39 @@
 resource "helm_release" "istio_base_chart" {
-  name             = "istio-base"
-  namespace        = kubernetes_namespace.istio.metadata[0].name
-  create_namespace = true
-  repository       = "https://istio-release.storage.googleapis.com/charts"
-  chart            = "base"
-  cleanup_on_fail  = true
-  force_update     = false
-  wait             = false
-
+  name            = "istio-base"
+  namespace       = kubernetes_namespace.istio.metadata[0].name
+  repository      = "https://istio-release.storage.googleapis.com/charts"
+  chart           = "base"
+  cleanup_on_fail = true
+  force_update    = false
   depends_on = [
     kubernetes_namespace.istio
   ]
 }
 
 resource "helm_release" "istiod_chart" {
-  name             = "istiod"
-  namespace        = kubernetes_namespace.istio.metadata[0].name
-  create_namespace = true
-  repository       = "https://istio-release.storage.googleapis.com/charts"
-  chart            = "istiod"
-  cleanup_on_fail  = true
-  force_update     = false
-  wait             = true
-  timeout          = 600
-  values = [
-    file("istio.yaml")
-  ]
+  name            = "istiod"
+  namespace       = kubernetes_namespace.istio.metadata[0].name
+  repository      = "https://istio-release.storage.googleapis.com/charts"
+  chart           = "istiod"
+  cleanup_on_fail = true
+  force_update    = false
+  timeout         = 600
 
+  # set {
+  #   name  = "telemetry.enabled"
+  #   value = "true"
+  # }
+  # set {
+  #   name  = "meshConfig.IngressService"
+  #   value = "istio-gateway"
+  # }
+  # set {
+  #   name  = "meshConfig.IngressSelector"
+  #   value = "gateway"
+  # }
+  values = [
+    file("istiod.yaml")
+  ]
   depends_on = [
     helm_release.istio_base_chart
   ]
@@ -40,16 +47,16 @@ resource "helm_release" "istio_ingress_chart" {
   chart            = "gateway" # Changed to istio-ingressgateway
   cleanup_on_fail  = true
   force_update     = false
-  wait             = false
-  timeout          = 600
+  # wait             = false
+  # timeout = 600
 
   values = [
-    file("istio.yaml")
+    file("istiod.yaml")
   ]
 
   depends_on = [
     kubernetes_namespace.istio,
-    helm_release.istiod_chart
+    helm_release.istiod_chart, helm_release.istio_base_chart
   ]
 }
 
@@ -68,3 +75,6 @@ resource "helm_release" "istio_ingress_chart" {
 #     helm_release.istio_ingress_chart
 #   ]
 # }
+
+
+

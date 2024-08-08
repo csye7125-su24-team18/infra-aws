@@ -19,6 +19,7 @@ module "eks" {
   cluster_security_group_id                = aws_security_group.eks_sg_tf.id
 
 
+
   # Enable Control plane logging
   cluster_enabled_log_types = [
     "api",
@@ -46,14 +47,6 @@ module "eks" {
       most_recent              = true
       service_account_role_arn = aws_iam_role.eks_ebs_csi_driver_role.arn
     }
-
-    vpc-cni = {
-      most_recent = var.cluster_eks["cluster_addons"]["vpc-cni"]["most_recent"]
-      configuration_values = jsonencode({
-        enableNetworkPolicy = "true"
-      })
-    }
-
     # Install Amazon EKS Pod Identity Agent EKS add-on
     # pod-identity-webhook = {
     #   version = "1.7.0"
@@ -98,7 +91,22 @@ module "eks" {
   }
 }
 
+module "eks_blueprints_addons" {
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "~> 1.0"
 
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  enable_external_dns                   = true
+  enable_cert_manager                   = true
+  cert_manager_route53_hosted_zone_arns = ["arn:aws:route53:::hostedzone/Z01032301HCNS7BLR5S"]
+
+  tags = {
+  Environment = "cert-manager" }
+}
 
 resource "aws_iam_role" "eks_ebs_csi_driver_role" {
   name = "${var.cluster_name}-eks_ebs_csi_driver_role"

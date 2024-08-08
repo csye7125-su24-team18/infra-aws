@@ -1,35 +1,30 @@
-# Configuration values for Istio
-# The `istio.yaml` file should contain these values
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: nginx-gateway
+  namespace: istio-ingressgateway
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: "harsh-agrawal.me"
+spec:
+  selector:
+    app.kubernetes.io/name: ingress-nginx
+  servers:
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: grafana-tls
+      hosts:
+        - "grafana.harsh-agrawal.me"
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      tls:
+        httpsRedirect: true
+      hosts:
+        - "grafana.harsh-agrawal.me"
 
-global:
-  proxy:
-    resources:
-      limits:
-        cpu: 2000m
-        memory: 1024Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
-  defaultPodDisruptionBudget:
-    enabled: true
-pilot:
-  autoscaleEnabled: true
-  autoscaleMin: 2
-  autoscaleMax: 5
-  replicaCount: 2
-gateways:
-  istio-ingressgateway:
-    autoscaleEnabled: true
-    autoscaleMin: 1
-    autoscaleMax: 5
-    serviceAnnotations:
-      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
-      service.beta.kubernetes.io/aws-load-balancer-attributes: "load_balancing.cross_zone.enabled=true"
-    resources:
-      limits:
-        cpu: 2000m
-        memory: 1024Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+

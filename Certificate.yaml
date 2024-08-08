@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-cert
+  namespace: istio-ingressgateway
+spec:
+  secretName: grafana-tls
+  issuerRef:
+      name: letsencrypt-route53
+      kind: ClusterIssuer
+  commonName: grafana.harsh-agrawal.me
+  dnsNames:
+    - grafana.harsh-agrawal.me
