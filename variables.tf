@@ -83,19 +83,3 @@ variable "postgresql_password" {
   description = "The password for the PostgreSQL database"
   type        = string
 }
-
-# variable "chart_path" {
-#   description = "The path to the Helm chart"
-#   type        = string
-# }
-
-variable "cluster_eks" {
-  description = "The EKS cluster configuration"
-  type        = map(any)
-}
-
-variable "Fluent_Bit_Role_Name" {
-  description = "The name of the IAM role for Fluent Bit"
-  type        = string
-  default     = "FluentBitRole" # You can change this default value as needed
-}

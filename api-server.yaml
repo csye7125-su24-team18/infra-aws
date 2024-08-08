@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubeapi
+  namespace: kube-system
+  annotations:
+    nginx.ingress.kubernetes.io/secure-backends: "true"       # Indicates that the backend (Kubernetes API) uses HTTPS.
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"     # Ensures that NGINX communicates with the backend using HTTPS.
+spec:
+  rules:
+  - host: "harsh-agrawal.me"                                 # Updated hostname to match.
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"                                             # The path to match.
+        backend:
+          service:
+            name: kubernetes                                  # The service name for the Kubernetes API server.
+            port:
+              number: 443                                     # The port number on which the Kubernetes API server is exposed.

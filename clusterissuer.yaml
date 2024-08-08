@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  namespace: istio-ingressgateway
+  name: letsencrypt-route53
+spec:
+  acme:
+    email: poojahusky@gmail.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-route53
+    solvers:
+    - dns01:
+        route53:
+          region: us-east-2
+          hostedZoneID: Z01032301HCNS7BLR5S
+          

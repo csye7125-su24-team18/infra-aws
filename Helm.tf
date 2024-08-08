@@ -3,10 +3,51 @@ provider "helm" {
     host                   = data.aws_eks_cluster.cluster.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
     token                  = data.aws_eks_cluster_auth.cluster.token
+    config_path            = "C:\\Users\\pooja\\.kube\\config"
   }
 }
 
+resource "helm_release" "metrics_server" {
+  name       = "metrics-server"
+  repository = "https://kubernetes-sigs.github.io/metrics-server/"
+  chart      = "metrics-server"
+  version    = "0.6.1" # Use the latest stable version or the version you need
 
+  # Ensure that you set the correct namespace or use the default namespace
+  namespace = "kube-system"
+
+  values = [<<EOF
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: metrics-server
+    namespace: kube-system
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        k8s-app: metrics-server
+    template:
+      metadata:
+        labels:
+          k8s-app: metrics-server
+      spec:
+        containers:
+        - name: metrics-server
+          image: metrics-server/metrics-server:v0.6.1
+          command:
+          - /metrics-server
+          - --cert-dir=/tmp
+          - --secure-port=443
+          - --kubelet-insecure-tls
+          - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+          - --kubelet-use-node-status-port
+          ports:
+          - containerPort: 443
+            name: main-port
+  EOF
+  ]
+}
 
 resource "helm_release" "kafka" {
   name       = "kafka"

@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: grafana-gateway
+  namespace: monitoring
+spec:
+  selector:
+    istio: istio-ingress # use Istio default gateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "grafana.harsh-agrawal.me"
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: grafana-tls # must be the same as the secret created by cert-manager
+    hosts:
+    - "grafana.harsh-agrawal.me"
