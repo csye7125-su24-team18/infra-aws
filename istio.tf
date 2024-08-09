@@ -32,7 +32,7 @@ resource "helm_release" "istiod_chart" {
   #   value = "gateway"
   # }
   values = [
-    file("istiod.yaml")
+    file("istio.yaml")
   ]
   depends_on = [
     helm_release.istio_base_chart
@@ -51,7 +51,7 @@ resource "helm_release" "istio_ingress_chart" {
   # timeout = 600
 
   values = [
-    file("istiod.yaml")
+    file("istio.yaml")
   ]
 
   depends_on = [

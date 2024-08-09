@@ -16,8 +16,8 @@ provider "aws" {
 # Provider for Infra account
 provider "aws" {
   alias   = "infra"
-  region  = "us-east-1"
-  profile = "infra" # Assuming you use named profiles; adjust as needed
+  region  = "us-east-2"
+  profile = "dev" # Assuming you use named profiles; adjust as needed
 }
 
 
