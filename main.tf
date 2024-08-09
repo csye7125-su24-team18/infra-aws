@@ -16,17 +16,19 @@ provider "aws" {
 # Provider for Infra account
 provider "aws" {
   alias   = "infra"
-  region  = "us-east-1"
-  profile = "infra" # Assuming you use named profiles; adjust as needed
+  region  = "us-east-2"
+  profile = "dev" # Assuming you use named profiles; adjust as needed
 }
 
 
-resource "aws_cloudwatch_log_group" "this" {
-  name              = "/aws/eks/dev-cluster/cluster"
-  retention_in_days = 7
 
-  lifecycle {
-    create_before_destroy = true
-    ignore_changes        = [name]
-  }
-}
+# resource "aws_cloudwatch_log_group" "this" {
+#   name              = "/aws/eks/${var.cluster_name}/cluster"
+#   retention_in_days = var.cloudwatch_log_group_retention_in_days
+#   log_group_class   = var.cloudwatch_log_group_class
+
+#   lifecycle {
+#     create_before_destroy = true
+#     ignore_changes        = [name]
+#   }
+# }

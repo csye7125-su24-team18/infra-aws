@@ -60,3 +60,9 @@ metrics:
       prometheus.io/scrape: "true"
       prometheus.io/port: "{{ .Values.metrics.jmx.service.ports.metrics }}"
       prometheus.io/path: "/metrics"
+
+serviceAccount:
+  create: true
+  automountServiceAccountToken: true
+rbac:
+  create: true

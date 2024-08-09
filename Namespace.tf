@@ -21,6 +21,7 @@ resource "kubernetes_namespace" "kafka" {
 
     labels = {
       mylabel = "kafka"
+      # istio-injection = "enabled"
     }
 
     name = "kafka"
@@ -35,25 +36,26 @@ resource "kubernetes_namespace" "db" {
     }
 
     labels = {
-      mylabel = "db"
+      mylabel         = "db"
+      istio-injection = "enabled"
     }
 
     name = "db"
   }
 }
-resource "kubernetes_namespace" "autoscaler" {
-  metadata {
-    annotations = {
-      name = "autoscaler"
-    }
+# resource "kubernetes_namespace" "kube-system" {
+#   metadata {
+#     annotations = {
+#       name = "kube-system"
+#     }
 
-    labels = {
-      mylabel = "autoscaler"
-    }
+#     labels = {
+#       mylabel = "kube-system"
+#     }
 
-    name = "autoscaler"
-  }
-}
+#     name = "kube-system"
+#   }
+# }
 
 resource "kubernetes_namespace" "operator" {
   metadata {
@@ -62,7 +64,8 @@ resource "kubernetes_namespace" "operator" {
     }
 
     labels = {
-      mylabel = "operator"
+      mylabel         = "operator"
+      istio-injection = "enabled"
     }
 
     name = "operator"
@@ -75,9 +78,9 @@ resource "kubernetes_namespace" "logging" {
       name = "logging"
     }
 
-    labels = {
-      mylabel = "logging"
-    }
+    # labels = {
+    #   istio-injection = "enabled"
+    # }
 
     name = "logging"
   }
@@ -91,6 +94,7 @@ resource "kubernetes_namespace" "monitoring" {
 
     labels = {
       mylabel = "monitoring"
+      # istio-injection = "enabled"
     }
 
     name = "monitoring"
@@ -100,9 +104,9 @@ resource "kubernetes_namespace" "monitoring" {
 resource "kubernetes_namespace" "istio" {
   metadata {
     name = "istio-system"
-    labels = {
-      istio-injection = "enabled"
-    }
+    # labels = {
+    #   istio-injection = "enabled"
+    # }
   }
 }
 
@@ -110,6 +114,15 @@ resource "kubernetes_namespace" "istio" {
 resource "kubernetes_namespace" "cert_manager" {
   metadata {
     name = "cert-manager"
+    # labels = {
+    #   "istio-injection" = "enabled"
+    # }
+  }
+}
+
+resource "kubernetes_namespace" "ingrress_gateway" {
+  metadata {
+    name = "istio-ingressgateway"
     labels = {
       "istio-injection" = "enabled"
     }

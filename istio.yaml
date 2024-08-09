@@ -1,10 +1,4 @@
-# Configuration values for Istio
-# The `istio.yaml` file should contain these values
-
 global:
-  logAsJson: true
-  logging:
-    level: "info"
   proxy:
     resources:
       limits:
@@ -15,13 +9,14 @@ global:
         memory: 128Mi
   defaultPodDisruptionBudget:
     enabled: true
-
+  logAsJson: true
+  logging:
+    level: "info"
 pilot:
   autoscaleEnabled: true
   autoscaleMin: 2
   autoscaleMax: 5
   replicaCount: 2
-
 gateways:
   istio-ingressgateway:
     autoscaleEnabled: true
